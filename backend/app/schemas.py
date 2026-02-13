@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from datetime import date, datetime
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -16,7 +14,7 @@ class UploadResponse(BaseModel):
 class UploadListItem(BaseModel):
     id: int
     filename: str
-    uploaded_at: datetime
+    uploaded_at: datetime.datetime
     record_count: int
 
     model_config = {"from_attributes": True}
@@ -63,7 +61,7 @@ class ChartsResponse(BaseModel):
 class IncidentBrief(BaseModel):
     id: int
     name: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[datetime.date] = None
     incident_type: Optional[str] = None
     classifier: Optional[str] = None
 
@@ -109,7 +107,7 @@ class IncidentItem(BaseModel):
     classifier: Optional[str] = None
     body_part: Optional[str] = None
     observation: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[datetime.date] = None
     year: Optional[int] = None
     attention_cost: float = 0.0
     medicine_cost: float = 0.0
