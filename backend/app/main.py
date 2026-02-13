@@ -37,6 +37,11 @@ app.include_router(upload.router)
 app.include_router(dashboard.router)
 app.include_router(export.router)
 
+
+@app.get("/api/health")
+async def health():
+    return {"status": "ok"}
+
 # Serve frontend static files in production
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="static-assets")
