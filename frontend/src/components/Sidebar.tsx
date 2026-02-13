@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, AlertTriangle, Upload, Shield } from 'lucide-react'
+import { LayoutDashboard, AlertTriangle, Upload } from 'lucide-react'
 
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -11,12 +11,9 @@ export default function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 h-screen w-60 bg-gray-900 border-r border-gray-700 flex flex-col z-40">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6 border-b border-gray-700">
-        <Shield className="w-8 h-8 text-orange-500" />
-        <div>
-          <h1 className="text-lg font-bold text-gray-100 leading-tight">Dashboard SST</h1>
-          <p className="text-xs text-gray-500">Seguridad y Salud</p>
-        </div>
+      <div className="flex flex-col items-center px-5 py-5 border-b border-gray-700">
+        <img src="/logo-faymex.jpg" alt="Faymex" className="w-28 h-auto rounded-lg" />
+        <h1 className="text-sm font-bold text-gray-300 mt-3 tracking-wide">Dashboard SST</h1>
       </div>
 
       {/* Navigation */}
@@ -41,8 +38,8 @@ export default function Sidebar() {
       </nav>
 
       {/* Branding */}
-      <div className="px-5 py-4 border-t border-gray-700">
-        <p className="text-xs text-gray-600 font-medium tracking-wider uppercase">Faymex</p>
+      <div className="px-5 py-4 border-t border-gray-700 text-center">
+        <p className="text-[10px] text-gray-600">Faymex Servicios Industriales</p>
         <p className="text-[10px] text-gray-700">Prevención de Riesgos</p>
       </div>
     </aside>
