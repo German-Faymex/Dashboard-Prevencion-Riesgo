@@ -9,7 +9,11 @@ interface IncidentTableProps {
 }
 
 function formatPesos(value: number): string {
-  return '$' + new Intl.NumberFormat('es-CL').format(Math.round(value))
+  return new Intl.NumberFormat('es-CL', {
+    style: 'currency',
+    currency: 'CLP',
+    minimumFractionDigits: 0,
+  }).format(Math.round(value))
 }
 
 function formatDate(dateStr: string | null): string {
@@ -22,12 +26,20 @@ function formatDate(dateStr: string | null): string {
 }
 
 function statusColor(status: string | null): string {
-  if (!status) return 'text-gray-400'
+  if (!status) return 'text-gray-400 bg-gray-500/10 border-gray-500/30'
   const upper = status.toUpperCase()
-  if (upper === 'CONCLUIDO') return 'text-green-400 bg-green-500/10 border-green-500/30'
-  if (upper === 'EN PROCESO') return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30'
-  if (upper === 'NO REALIZADO') return 'text-red-400 bg-red-500/10 border-red-500/30'
+  if (upper === 'CONCLUIDO') return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+  if (upper === 'EN PROCESO') return 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+  if (upper === 'NO REALIZADO') return 'bg-red-500/20 text-red-400 border-red-500/30'
   return 'text-gray-400 bg-gray-500/10 border-gray-500/30'
+}
+
+function tipoColor(tipo: string | null): string {
+  if (!tipo) return 'text-gray-400 bg-gray-500/10'
+  const upper = tipo.toUpperCase()
+  if (upper === 'ACCIDENTE') return 'bg-red-500/20 text-red-400'
+  if (upper === 'INCIDENTE') return 'bg-orange-500/20 text-orange-400'
+  return 'text-gray-400 bg-gray-500/10'
 }
 
 type SortOrder = 'asc' | 'desc'
@@ -88,10 +100,29 @@ export default function IncidentTable({ filters }: IncidentTableProps) {
     }
   }
 
+  const getPageNumbers = () => {
+    const pageNumbers: (number | string)[] = []
+    const maxVisible = 5
+
+    if (pages <= maxVisible + 2) {
+      for (let i = 1; i <= pages; i++) pageNumbers.push(i)
+    } else {
+      pageNumbers.push(1)
+      if (page > 3) pageNumbers.push('...')
+      const start = Math.max(2, page - 1)
+      const end = Math.min(pages - 1, page + 1)
+      for (let i = start; i <= end; i++) pageNumbers.push(i)
+      if (page < pages - 2) pageNumbers.push('...')
+      pageNumbers.push(pages)
+    }
+
+    return pageNumbers
+  }
+
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700">
+    <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl shadow-lg shadow-black/20 overflow-hidden">
       {/* Search */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-gray-700/50">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
@@ -99,7 +130,7 @@ export default function IncidentTable({ filters }: IncidentTableProps) {
             placeholder="Buscar por nombre, RUT, cargo..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-900 border border-gray-600 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 transition-colors"
           />
         </div>
       </div>
@@ -108,63 +139,75 @@ export default function IncidentTable({ filters }: IncidentTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-700">
+            <tr className="bg-gray-800/80 border-b-2 border-gray-600">
               {COLUMNS.map((col) => (
                 <th
                   key={col.key}
                   onClick={() => handleSort(col.key)}
-                  className={`px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-gray-200 transition-colors ${col.width}`}
+                  className={`sticky top-0 px-3 py-3.5 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-gray-200 transition-colors ${col.width}`}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     {col.label}
-                    {sortBy === col.key && (
-                      sortOrder === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                    )}
+                    <span className="inline-flex flex-col">
+                      {sortBy === col.key ? (
+                        sortOrder === 'asc' ? (
+                          <ChevronUp className="w-3.5 h-3.5 text-orange-400" />
+                        ) : (
+                          <ChevronDown className="w-3.5 h-3.5 text-orange-400" />
+                        )
+                      ) : (
+                        <ChevronDown className="w-3 h-3 text-gray-600" />
+                      )}
+                    </span>
                   </div>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700/50">
+          <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i}>
+                <tr key={i} className={i % 2 === 0 ? 'bg-gray-800/30' : ''}>
                   {COLUMNS.map((col) => (
                     <td key={col.key} className="px-3 py-3">
-                      <div className="h-4 bg-gray-700 rounded animate-pulse" />
+                      <div className="h-4 bg-gray-700/60 rounded animate-pulse" />
                     </td>
                   ))}
                 </tr>
               ))
             ) : incidents.length === 0 ? (
               <tr>
-                <td colSpan={COLUMNS.length} className="px-3 py-8 text-center text-gray-500">
-                  No se encontraron incidentes
+                <td colSpan={COLUMNS.length} className="px-3 py-12 text-center text-gray-500">
+                  <div className="flex flex-col items-center gap-2">
+                    <Search className="w-8 h-8 text-gray-600" />
+                    <span>No se encontraron incidentes</span>
+                  </div>
                 </td>
               </tr>
             ) : (
-              incidents.map((inc) => (
-                <tr key={inc.id} className="hover:bg-gray-750/50 transition-colors">
-                  <td className="px-3 py-2.5 text-gray-400">{inc.number}</td>
+              incidents.map((inc, index) => (
+                <tr
+                  key={inc.id}
+                  className={`hover:bg-gray-700/40 transition-colors duration-150 border-b border-gray-700/30 ${
+                    index % 2 === 0 ? 'bg-gray-800/30' : ''
+                  }`}
+                >
+                  <td className="px-3 py-2.5 text-gray-500 font-mono text-xs">{inc.number}</td>
                   <td className="px-3 py-2.5 text-gray-200 font-medium">{inc.name}</td>
-                  <td className="px-3 py-2.5 text-gray-400">{inc.rut}</td>
+                  <td className="px-3 py-2.5 text-gray-400 font-mono text-xs">{inc.rut}</td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.position || '-'}</td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.work_center || '-'}</td>
                   <td className="px-3 py-2.5">
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      inc.incident_type === 'ACCIDENTE'
-                        ? 'text-red-400 bg-red-500/10'
-                        : 'text-orange-400 bg-orange-500/10'
-                    }`}>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${tipoColor(inc.incident_type)}`}>
                       {inc.incident_type || '-'}
                     </span>
                   </td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.classifier || '-'}</td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.body_part || '-'}</td>
-                  <td className="px-3 py-2.5 text-gray-400">{formatDate(inc.date)}</td>
-                  <td className="px-3 py-2.5 text-gray-200">{formatPesos(inc.total_cost)}</td>
+                  <td className="px-3 py-2.5 text-gray-400 tabular-nums">{formatDate(inc.date)}</td>
+                  <td className="px-3 py-2.5 text-gray-200 font-medium tabular-nums">{formatPesos(inc.total_cost)}</td>
                   <td className="px-3 py-2.5">
-                    <span className={`text-xs px-2 py-0.5 rounded border ${statusColor(inc.final_status)}`}>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-md border ${statusColor(inc.final_status)}`}>
                       {inc.final_status || '-'}
                     </span>
                   </td>
@@ -176,25 +219,43 @@ export default function IncidentTable({ filters }: IncidentTableProps) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-gray-700">
-        <p className="text-xs text-gray-500">
+      <div className="flex items-center justify-between px-4 py-3.5 border-t border-gray-700/50 bg-gray-800/30">
+        <p className="text-gray-500 text-sm">
           Mostrando {incidents.length} de {total} registros
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-xs text-gray-400">
-            Página {page} de {pages}
-          </span>
+
+          {getPageNumbers().map((pageNum, i) =>
+            typeof pageNum === 'string' ? (
+              <span key={`dots-${i}`} className="px-2 text-gray-500 text-sm">
+                {pageNum}
+              </span>
+            ) : (
+              <button
+                key={pageNum}
+                onClick={() => setPage(pageNum)}
+                className={`min-w-[36px] h-9 rounded-lg text-sm font-medium transition-colors ${
+                  page === pageNum
+                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                }`}
+              >
+                {pageNum}
+              </button>
+            )
+          )}
+
           <button
             onClick={() => setPage((p) => Math.min(pages, p + 1))}
             disabled={page === pages}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

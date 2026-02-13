@@ -56,8 +56,8 @@ export interface AlertItem {
 export interface TrendsData {
   month_over_month_change: number
   cost_trend: number
-  most_affected_body_part: { name: string; count: number }
-  most_common_classifier: { name: string; count: number }
+  most_affected_body_part: string | null
+  most_common_classifier: string | null
   alerts: AlertItem[]
 }
 

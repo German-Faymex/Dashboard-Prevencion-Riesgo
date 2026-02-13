@@ -1,1 +1,74 @@
 @import "tailwindcss";
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Dark date picker */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Dark select */
+select {
+  color-scheme: dark;
+}
+
+/* Smooth transitions globally */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: rgba(249, 115, 22, 0.3);
+  color: white;
+}
+
+/* Print styles for PDF export */
+@media print {
+  /* Hide non-content elements */
+  nav, .sidebar, [data-no-print] {
+    display: none !important;
+  }
+
+  /* Force background colors to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    background: #030712 !important;
+  }
+
+  /* Remove sidebar margin, use full width */
+  main {
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+
+  /* Ensure page breaks don't cut cards/charts */
+  #dashboard-content > * {
+    break-inside: avoid;
+  }
+
+  /* Set page to landscape */
+  @page {
+    size: A3 landscape;
+    margin: 10mm;
+  }
+}

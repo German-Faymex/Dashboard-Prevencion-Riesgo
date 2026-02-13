@@ -19,7 +19,9 @@ export default function DashboardPage() {
         {loading && <Loader2 className="w-5 h-5 text-orange-400 animate-spin" />}
       </div>
 
-      <FilterBar filters={filters} onChange={setFilters} />
+      <div data-no-print>
+        <FilterBar filters={filters} onChange={setFilters} />
+      </div>
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 text-red-400 text-sm">

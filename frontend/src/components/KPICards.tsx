@@ -18,8 +18,8 @@ interface CardConfig {
   getValue: (k: KPIs) => string
   icon: typeof AlertTriangle
   color: string
-  borderColor: string
-  bgColor: string
+  accentColor: string
+  iconBg: string
   trend?: (k: KPIs) => { value: number; type: 'increase' | 'decrease' | 'neutral' }
 }
 
@@ -29,8 +29,8 @@ const cards: CardConfig[] = [
     getValue: (k) => formatNumber(k.total_incidents),
     icon: AlertTriangle,
     color: 'text-orange-400',
-    borderColor: 'border-l-orange-500',
-    bgColor: 'bg-orange-500/10',
+    accentColor: 'bg-orange-500',
+    iconBg: 'bg-orange-500/20',
     trend: (k) => {
       const diff = k.incidents_this_month - k.incidents_prev_month
       return {
@@ -44,24 +44,24 @@ const cards: CardConfig[] = [
     getValue: (k) => formatNumber(k.total_accidents),
     icon: Flame,
     color: 'text-red-400',
-    borderColor: 'border-l-red-500',
-    bgColor: 'bg-red-500/10',
+    accentColor: 'bg-red-500',
+    iconBg: 'bg-red-500/20',
   },
   {
-    label: 'Días Perdidos',
+    label: 'Dias Perdidos',
     getValue: (k) => formatNumber(k.total_lost_days),
     icon: Clock,
     color: 'text-blue-400',
-    borderColor: 'border-l-blue-500',
-    bgColor: 'bg-blue-500/10',
+    accentColor: 'bg-blue-500',
+    iconBg: 'bg-blue-500/20',
   },
   {
     label: 'Costo Total',
     getValue: (k) => formatPesos(k.total_cost),
     icon: DollarSign,
     color: 'text-green-400',
-    borderColor: 'border-l-green-500',
-    bgColor: 'bg-green-500/10',
+    accentColor: 'bg-green-500',
+    iconBg: 'bg-green-500/20',
     trend: (k) => {
       const diff = k.cost_this_month - k.cost_prev_month
       return {
@@ -75,16 +75,16 @@ const cards: CardConfig[] = [
     getValue: (k) => formatNumber(k.active_cases),
     icon: Activity,
     color: 'text-yellow-400',
-    borderColor: 'border-l-yellow-500',
-    bgColor: 'bg-yellow-500/10',
+    accentColor: 'bg-yellow-500',
+    iconBg: 'bg-yellow-500/20',
   },
   {
     label: 'Promedio Edad',
     getValue: (k) => k.avg_age > 0 ? k.avg_age.toFixed(1) : '-',
     icon: Users,
     color: 'text-purple-400',
-    borderColor: 'border-l-purple-500',
-    bgColor: 'bg-purple-500/10',
+    accentColor: 'bg-purple-500',
+    iconBg: 'bg-purple-500/20',
   },
 ]
 
@@ -93,7 +93,7 @@ export default function KPICards({ kpis }: KPICardsProps) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-gray-800 rounded-xl p-4 border-l-4 border-gray-700 animate-pulse h-24" />
+          <div key={i} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 shadow-lg shadow-black/20 animate-pulse h-28" />
         ))}
       </div>
     )
@@ -108,16 +108,21 @@ export default function KPICards({ kpis }: KPICardsProps) {
         return (
           <div
             key={card.label}
-            className={`bg-gray-800 rounded-xl p-4 border-l-4 ${card.borderColor} hover:bg-gray-750 transition-colors`}
+            className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 shadow-lg shadow-black/20 hover:scale-[1.02] transition-all duration-200 overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-2">
-              <div className={`p-2 rounded-lg ${card.bgColor}`}>
-                <Icon className={`w-4 h-4 ${card.color}`} />
+            {/* Colored top accent border */}
+            <div className={`absolute top-0 left-0 right-0 h-1 ${card.accentColor}`} />
+
+            <div className="flex items-center justify-between mb-3">
+              <div className={`p-2 rounded-full ${card.iconBg}`}>
+                <Icon className={`w-5 h-5 ${card.color}`} />
               </div>
               {trend && trend.type !== 'neutral' && (
                 <div
-                  className={`flex items-center gap-0.5 text-xs font-medium ${
-                    trend.type === 'increase' ? 'text-red-400' : 'text-green-400'
+                  className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                    trend.type === 'increase'
+                      ? 'bg-red-500/20 text-red-400'
+                      : 'bg-green-500/20 text-green-400'
                   }`}
                 >
                   {trend.type === 'increase' ? (
@@ -129,8 +134,8 @@ export default function KPICards({ kpis }: KPICardsProps) {
                 </div>
               )}
             </div>
-            <p className="text-xl font-bold text-gray-100">{card.getValue(kpis)}</p>
-            <p className="text-xs text-gray-400 mt-1">{card.label}</p>
+            <p className="text-3xl font-bold text-gray-100 tracking-tight">{card.getValue(kpis)}</p>
+            <p className="text-xs text-gray-400 mt-1.5">{card.label}</p>
           </div>
         )
       })}
