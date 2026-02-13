@@ -28,22 +28,22 @@ function buildParams(filters: Filters): Record<string, string> {
 }
 
 export async function fetchKPIs(filters: Filters): Promise<KPIs> {
-  const { data } = await api.get('/kpis', { params: buildParams(filters) })
+  const { data } = await api.get('/dashboard/kpis', { params: buildParams(filters) })
   return data
 }
 
 export async function fetchCharts(filters: Filters): Promise<ChartsData> {
-  const { data } = await api.get('/charts', { params: buildParams(filters) })
+  const { data } = await api.get('/dashboard/charts', { params: buildParams(filters) })
   return data
 }
 
 export async function fetchBodyMap(filters: Filters): Promise<BodyMapData> {
-  const { data } = await api.get('/body-map', { params: buildParams(filters) })
+  const { data } = await api.get('/dashboard/body-map', { params: buildParams(filters) })
   return data
 }
 
 export async function fetchTrends(filters: Filters): Promise<TrendsData> {
-  const { data } = await api.get('/trends', { params: buildParams(filters) })
+  const { data } = await api.get('/dashboard/trends', { params: buildParams(filters) })
   return data
 }
 
@@ -63,7 +63,7 @@ export async function fetchIncidents(
   if (search) params.search = search
   if (sortBy) params.sort_by = sortBy
   if (sortOrder) params.sort_order = sortOrder
-  const { data } = await api.get('/incidents', { params })
+  const { data } = await api.get('/dashboard/incidents', { params })
   return data
 }
 
