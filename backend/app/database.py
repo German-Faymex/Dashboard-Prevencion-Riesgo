@@ -24,7 +24,7 @@ async def get_db():
         yield session
 
 
-async def _migrate_add_columns(conn):
+def _migrate_add_columns(conn):
     """Add new columns to existing tables if they don't exist."""
     if db_url.startswith("sqlite"):
         result = conn.execute(text("PRAGMA table_info(incidents)"))
@@ -44,4 +44,4 @@ async def _migrate_add_columns(conn):
 async def create_tables():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        await conn.run_sync(lambda c: _migrate_add_columns(c))
+        await conn.run_sync(_migrate_add_columns)
