@@ -277,6 +277,34 @@ function AttentionPieChart({ data }: { data: ChartsData }) {
   )
 }
 
+function ContractBarChart({ data }: { data: ChartsData }) {
+  return (
+    <ChartCard title="Por Contrato" accentColor="#ec4899">
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={data.by_contract}>
+          <defs>
+            {COLORS.map((color, idx) => (
+              <linearGradient key={idx} id={`barGradContract${idx}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.6} />
+              </linearGradient>
+            ))}
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <XAxis dataKey="name" tick={{ fill: '#9ca3af', fontSize: 12 }} angle={-35} textAnchor="end" height={60} />
+          <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+            {data.by_contract.map((_, idx) => (
+              <Cell key={idx} fill={`url(#barGradContract${idx % COLORS.length})`} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartCard>
+  )
+}
+
 export default function Charts({ data, section = 'top' }: ChartsProps) {
   if (!data) {
     return (
@@ -303,6 +331,7 @@ export default function Charts({ data, section = 'top' }: ChartsProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <CostByClassifierChart data={data} />
       <AttentionPieChart data={data} />
+      <ContractBarChart data={data} />
     </div>
   )
 }

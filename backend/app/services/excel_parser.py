@@ -32,6 +32,7 @@ COLUMN_MAP = {
     "estado": "status",
     "estado final": "final_status",
     "imagen": "image_url",
+    "contrato": "contract",
 }
 
 NUMERIC_INT_FIELDS = {"number", "age", "lost_days", "year"}

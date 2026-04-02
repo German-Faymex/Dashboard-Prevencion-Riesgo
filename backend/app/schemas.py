@@ -56,6 +56,7 @@ class ChartsResponse(BaseModel):
     by_sex: list[ChartDataItem] = []
     by_attention: list[ChartDataItem] = []
     cost_by_classifier: list[ChartDataItem] = []
+    by_contract: list[ChartDataItem] = []
 
 
 class IncidentBrief(BaseModel):
@@ -117,6 +118,7 @@ class IncidentItem(BaseModel):
     status: Optional[str] = None
     final_status: Optional[str] = None
     image_url: Optional[str] = None
+    contract: Optional[str] = None
     upload_id: int
 
     model_config = {"from_attributes": True}

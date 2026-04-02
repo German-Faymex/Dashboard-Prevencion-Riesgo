@@ -34,6 +34,7 @@ export interface ChartsData {
   by_sex: ChartDataItem[]
   by_attention: ChartDataItem[]
   cost_by_classifier: ChartDataItem[]
+  by_contract: ChartDataItem[]
 }
 
 export interface BodyPartData {
@@ -87,6 +88,7 @@ export interface Incident {
   status: string | null
   final_status: string | null
   image_url: string | null
+  contract: string | null
   upload_id: number
 }
 
@@ -121,4 +123,5 @@ export interface Filters {
   classifier?: string
   body_part?: string
   final_status?: string
+  contract?: string
 }

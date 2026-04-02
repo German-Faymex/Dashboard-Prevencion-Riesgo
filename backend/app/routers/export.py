@@ -39,6 +39,8 @@ def _apply_filters(query, filters: dict):
         query = query.where(Incident.body_part == filters["body_part"])
     if filters.get("final_status"):
         query = query.where(Incident.final_status == filters["final_status"])
+    if filters.get("contract"):
+        query = query.where(Incident.contract == filters["contract"])
 
     return query
 
@@ -67,6 +69,7 @@ EXPORT_COLUMNS = [
     ("Gasto Total", "total_cost"),
     ("Estado", "status"),
     ("Estado Final", "final_status"),
+    ("Contrato", "contract"),
 ]
 
 
@@ -81,6 +84,7 @@ async def export_excel(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     import xlsxwriter
 
@@ -93,6 +97,7 @@ async def export_excel(
         "classifier": classifier,
         "body_part": body_part,
         "final_status": final_status,
+        "contract": contract,
     }
 
     query = select(Incident)

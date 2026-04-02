@@ -50,6 +50,7 @@ const COLUMNS = [
   { key: 'rut', label: 'RUT', width: 'w-28' },
   { key: 'position', label: 'Cargo', width: 'w-28' },
   { key: 'work_center', label: 'Centro', width: 'w-20' },
+  { key: 'contract', label: 'Contrato', width: 'w-28' },
   { key: 'incident_type', label: 'Tipo', width: 'w-24' },
   { key: 'classifier', label: 'Tipificador', width: 'w-28' },
   { key: 'body_part', label: 'Parte del Cuerpo', width: 'w-32' },
@@ -197,6 +198,7 @@ export default function IncidentTable({ filters }: IncidentTableProps) {
                   <td className="px-3 py-2.5 text-gray-400 font-mono text-xs">{inc.rut}</td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.position || '-'}</td>
                   <td className="px-3 py-2.5 text-gray-400">{inc.work_center || '-'}</td>
+                  <td className="px-3 py-2.5 text-gray-400 font-mono text-xs">{inc.contract || '-'}</td>
                   <td className="px-3 py-2.5">
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${tipoColor(inc.incident_type)}`}>
                       {inc.incident_type || '-'}

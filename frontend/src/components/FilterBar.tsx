@@ -8,6 +8,7 @@ interface FilterBarProps {
 }
 
 const WORK_CENTERS = ['DET', 'DCH', 'AN', 'GEME', 'DMH', 'DSAL', 'CYD', 'ANGLO', 'SOCYBER', 'CASA CENTRAL']
+const CONTRACTS = ['4600025178', '4600030332', 'CASA CENTRAL']
 const TYPES = ['ACCIDENTE', 'INCIDENTE']
 const CLASSIFIERS = ['DERMATITIS', 'LESION', 'FATIGA MUSCULAR', 'INTOXICACIÓN', 'OTROS']
 const FINAL_STATUSES = ['CONCLUIDO', 'EN PROCESO', 'NO REALIZADO']
@@ -79,6 +80,21 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
             <option value="">Todos</option>
             {WORK_CENTERS.map((wc) => (
               <option key={wc} value={wc}>{wc}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-400 text-xs font-medium uppercase tracking-wider">Contrato</label>
+          <select
+            value={filters.contract || ''}
+            onChange={(e) => update('contract', e.target.value)}
+            className={selectClasses}
+            style={{ colorScheme: 'dark' }}
+          >
+            <option value="">Todos</option>
+            {CONTRACTS.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>

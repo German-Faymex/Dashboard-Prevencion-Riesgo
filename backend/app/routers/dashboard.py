@@ -57,6 +57,9 @@ def _apply_filters(query, filters: dict):
     if filters.get("final_status"):
         query = query.where(Incident.final_status == filters["final_status"])
 
+    if filters.get("contract"):
+        query = query.where(Incident.contract == filters["contract"])
+
     return query
 
 
@@ -69,6 +72,7 @@ def _get_filter_params(
     classifier: str | None = None,
     body_part: str | None = None,
     final_status: str | None = None,
+    contract: str | None = None,
 ) -> dict:
     return {
         "date_from": date_from,
@@ -79,6 +83,7 @@ def _get_filter_params(
         "classifier": classifier,
         "body_part": body_part,
         "final_status": final_status,
+        "contract": contract,
     }
 
 
@@ -93,10 +98,11 @@ async def get_kpis(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     filters = _get_filter_params(
         date_from, date_to, work_center, position, incident_type,
-        classifier, body_part, final_status,
+        classifier, body_part, final_status, contract,
     )
 
     base = select(Incident)
@@ -200,10 +206,11 @@ async def get_charts(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     filters = _get_filter_params(
         date_from, date_to, work_center, position, incident_type,
-        classifier, body_part, final_status,
+        classifier, body_part, final_status, contract,
     )
 
     async def _group_count(column):
@@ -234,6 +241,7 @@ async def get_charts(
     by_sex = await _group_count(Incident.sex)
     by_attention = await _group_count(Incident.attention_type)
     cost_by_classifier = await _group_cost(Incident.classifier)
+    by_contract = await _group_count(Incident.contract)
 
     month_q = select(
         Incident.year,
@@ -275,6 +283,7 @@ async def get_charts(
         by_sex=by_sex,
         by_attention=by_attention,
         cost_by_classifier=cost_by_classifier,
+        by_contract=by_contract,
     )
 
 
@@ -289,10 +298,11 @@ async def get_body_map(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     filters = _get_filter_params(
         date_from, date_to, work_center, position, incident_type,
-        classifier, body_part, final_status,
+        classifier, body_part, final_status, contract,
     )
 
     count_q = select(func.count())
@@ -355,10 +365,11 @@ async def get_trends(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     filters = _get_filter_params(
         date_from, date_to, work_center, position, incident_type,
-        classifier, body_part, final_status,
+        classifier, body_part, final_status, contract,
     )
 
     today = date.today()
@@ -492,10 +503,11 @@ async def get_incidents(
     classifier: str | None = Query(None),
     body_part: str | None = Query(None),
     final_status: str | None = Query(None),
+    contract: str | None = Query(None),
 ):
     filters = _get_filter_params(
         date_from, date_to, work_center, position, incident_type,
-        classifier, body_part, final_status,
+        classifier, body_part, final_status, contract,
     )
 
     base = select(Incident)
@@ -516,7 +528,7 @@ async def get_incidents(
     allowed_sort_fields = {
         "id", "number", "name", "date", "age", "lost_days",
         "total_cost", "work_center", "incident_type", "classifier",
-        "body_part", "final_status",
+        "body_part", "final_status", "contract",
     }
     if sort_by and sort_by in allowed_sort_fields:
         col = getattr(Incident, sort_by)

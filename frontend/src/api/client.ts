@@ -24,6 +24,7 @@ function buildParams(filters: Filters): Record<string, string> {
   if (filters.classifier) params.classifier = filters.classifier
   if (filters.body_part) params.body_part = filters.body_part
   if (filters.final_status) params.final_status = filters.final_status
+  if (filters.contract) params.contract = filters.contract
   return params
 }
 

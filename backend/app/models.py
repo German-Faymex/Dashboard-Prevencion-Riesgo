@@ -49,6 +49,7 @@ class Incident(Base):
     status: Mapped[str | None] = mapped_column(String, nullable=True)
     final_status: Mapped[str | None] = mapped_column(String, nullable=True)
     image_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    contract: Mapped[str | None] = mapped_column(String, nullable=True)
     upload_id: Mapped[int] = mapped_column(Integer, ForeignKey("uploads.id"), nullable=False)
 
     upload: Mapped["Upload"] = relationship("Upload", back_populates="incidents")
