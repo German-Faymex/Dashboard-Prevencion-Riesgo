@@ -1,19 +1,32 @@
+import { useState, useEffect } from 'react'
 import { FileDown, FileText, X } from 'lucide-react'
 import type { Filters } from '../types'
-import { exportExcel } from '../api/client'
+import { exportExcel, fetchFilterOptions } from '../api/client'
 
 interface FilterBarProps {
   filters: Filters
   onChange: (filters: Filters) => void
 }
 
-const WORK_CENTERS = ['DET', 'DCH', 'AN', 'GEME', 'DMH', 'DSAL', 'CYD', 'ANGLO', 'SOCYBER', 'CASA CENTRAL']
-const CONTRACTS = ['4600025178', '4600030332', 'CASA CENTRAL']
+const WORK_CENTERS_FALLBACK = ['DET', 'DCH', 'AN', 'GEME', 'DMH', 'DSAL', 'CYD', 'ANGLO', 'SOCYBER', 'CASA CENTRAL']
 const TYPES = ['ACCIDENTE', 'INCIDENTE']
-const CLASSIFIERS = ['DERMATITIS', 'LESION', 'FATIGA MUSCULAR', 'INTOXICACIÓN', 'OTROS']
+const CLASSIFIERS_FALLBACK = ['DERMATITIS', 'LESION', 'FATIGA MUSCULAR', 'INTOXICACIÓN', 'OTROS']
 const FINAL_STATUSES = ['CONCLUIDO', 'EN PROCESO', 'NO REALIZADO']
 
 export default function FilterBar({ filters, onChange }: FilterBarProps) {
+  const [contracts, setContracts] = useState<string[]>([])
+  const [workCenters, setWorkCenters] = useState<string[]>(WORK_CENTERS_FALLBACK)
+  const [classifiers, setClassifiers] = useState<string[]>(CLASSIFIERS_FALLBACK)
+
+  useEffect(() => {
+    fetchFilterOptions()
+      .then((opts) => {
+        if (opts.contracts.length) setContracts(opts.contracts)
+        if (opts.work_centers.length) setWorkCenters(opts.work_centers)
+        if (opts.classifiers.length) setClassifiers(opts.classifiers)
+      })
+      .catch(() => {})
+  }, [])
   const update = (key: keyof Filters, value: string) => {
     const newFilters = { ...filters, [key]: value || undefined }
     onChange(newFilters)
@@ -78,7 +91,7 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
             style={{ colorScheme: 'dark' }}
           >
             <option value="">Todos</option>
-            {WORK_CENTERS.map((wc) => (
+            {workCenters.map((wc) => (
               <option key={wc} value={wc}>{wc}</option>
             ))}
           </select>
@@ -93,7 +106,7 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
             style={{ colorScheme: 'dark' }}
           >
             <option value="">Todos</option>
-            {CONTRACTS.map((c) => (
+            {contracts.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
@@ -123,7 +136,7 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
             style={{ colorScheme: 'dark' }}
           >
             <option value="">Todos</option>
-            {CLASSIFIERS.map((c) => (
+            {classifiers.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>

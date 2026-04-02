@@ -48,6 +48,11 @@ export async function fetchTrends(filters: Filters): Promise<TrendsData> {
   return data
 }
 
+export async function fetchFilterOptions(): Promise<{ contracts: string[]; work_centers: string[]; classifiers: string[] }> {
+  const { data } = await api.get('/dashboard/filter-options')
+  return data
+}
+
 export async function fetchIncidents(
   filters: Filters,
   page: number = 1,

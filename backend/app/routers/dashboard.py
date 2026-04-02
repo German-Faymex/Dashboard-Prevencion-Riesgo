@@ -551,3 +551,18 @@ async def get_incidents(
         size=size,
         pages=pages,
     )
+
+
+@router.get("/filter-options")
+async def get_filter_options(db: AsyncSession = Depends(get_db)):
+    """Return distinct values for dynamic filter dropdowns."""
+    options: dict[str, list[str]] = {}
+    for field_name, column in [
+        ("contracts", Incident.contract),
+        ("work_centers", Incident.work_center),
+        ("classifiers", Incident.classifier),
+    ]:
+        q = select(column).where(column.isnot(None)).distinct().order_by(column)
+        result = await db.execute(q)
+        options[field_name] = [row[0] for row in result.all()]
+    return options
