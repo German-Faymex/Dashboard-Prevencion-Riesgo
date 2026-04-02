@@ -68,7 +68,7 @@ Archivo Excel (.xlsx/.xls)
 ┌────────────────────────────────┐
 │   DASHBOARD INTERACTIVO        │
 ├── 6 KPIs principales           │
-├── 8 visualizaciones            │
+├── 9 visualizaciones            │
 ├── Mapa corporal interactivo    │
 ├── Panel de tendencias/alertas  │
 ├── Tabla de incidentes          │
@@ -86,15 +86,16 @@ Archivo Excel (.xlsx/.xls)
 - Casos activos (en proceso)
 - Edad promedio de afectados
 
-#### Visualizaciones (8 gráficos)
+#### Visualizaciones (9 gráficos)
 1. **Gráfico de torta**: distribución Incidentes vs. Accidentes
 2. **Barras horizontales**: incidentes por clasificador
 3. **Barras verticales**: incidentes por centro de trabajo
 4. **Gráfico de área**: tendencia mensual (incidentes + accidentes en el tiempo)
 5. **Barras verticales**: costo por clasificador (impacto financiero por tipo)
 6. **Gráfico de torta**: distribución por tipo de atención
-7. **Barras**: distribución por sexo y cargo
-8. Todos los gráficos son interactivos (tooltips, formato personalizado)
+7. **Barras verticales**: incidentes por contrato
+8. **Barras**: distribución por sexo y cargo
+9. Todos los gráficos son interactivos (tooltips, formato personalizado)
 
 #### Mapa Corporal Interactivo (SVG)
 - **33 regiones del cuerpo** clickeables (cabeza, cuello, hombros, brazos, torso, abdomen, caderas, piernas, pies)
@@ -123,16 +124,18 @@ Archivo Excel (.xlsx/.xls)
 ### Sistema de Filtros Multi-Dimensional
 Todos los endpoints soportan filtros combinados:
 - **Rango de fechas**: desde/hasta
-- **Organización**: centro de trabajo, cargo
+- **Organización**: centro de trabajo, contrato, cargo
 - **Tipo**: incidente vs. accidente, clasificador
 - **Impacto**: parte del cuerpo, estado final
 - **Búsqueda**: texto libre en nombre, RUT, observaciones
+
+Los dropdowns de Contrato, Centro de Trabajo y Tipificador se cargan dinámicamente desde la base de datos vía `/api/dashboard/filter-options`, por lo que valores nuevos aparecen automáticamente sin modificar código.
 
 ### Gestión de Datos
 - **Carga de archivos Excel** con validación automática
 - **Listado de cargas** con timestamp y conteo de registros
 - **Eliminación de cargas** (cascada a todos los incidentes asociados)
-- **Exportación a Excel** con 23 columnas formateadas profesionalmente
+- **Exportación a Excel** con 24 columnas formateadas profesionalmente (incluyendo contrato)
 
 ---
 
